@@ -1,0 +1,786 @@
+// All Variables Being Defined:
+
+
+// Ball's X position
+let ballX = 450;
+
+
+// Ball's Y position
+let ballY = 250;
+
+
+// Ball's X size
+let ballSize = 40;
+
+
+// The starting value of the score
+let score = 0;
+
+
+// The game state when the game begins
+let gameState = "welcome";
+
+
+// The default colour of the ball
+let ballColor = [255, 255, 255];
+
+
+// The variable that allows the user to see the score
+let showScoreText = true;
+
+
+// The variable that allows the user to see the levels
+let showLevelText = true;
+
+
+// The variable that is active when the user has completed a level
+let levelComplete = false;
+
+
+// The variable that starts the time when the user starts the level
+let startTime;
+
+
+// The variable that sets time limits for each level
+let timeLimits = {levelOne: 30, levelTwo: 20, levelThree: 15};
+
+
+
+
+// Start Of Function
+function setup() {
+
+
+// Creates the canvas
+ createCanvas(900, 500);
+
+
+// Poitions where the text will be on the canvas
+ textAlign(CENTER, CENTER);
+
+
+// Sets the text size
+ textSize(20);
+}
+
+
+
+
+// Start Of Drawing
+function draw() {
+
+
+// The background colour
+ background(0);
+
+
+// Welcome Screen
+ if (gameState === "welcome") {
+  
+// The colour of the text on the screen
+   fill(255);
+  
+// The text will not have an outline
+   noStroke();
+  
+// The size of the text
+   textSize(32);
+  
+ // A conditional statemnt that states if the score is 0 and the time will start
+ if (score === 0 && startTime) {
+  
+// The text that will be displayed on the screen if the user loses the level
+   text('You failed the level. Press your mouse to try again!', width / 2, height / 2);
+
+
+// if the user did not lose then this will allow different text to be shown on the screen
+} else {
+  
+// The text that will be displayed on the screen
+   text('Welcome to Catchoroma!', width / 2, height / 2 - 50);
+
+
+// The size of the text
+   textSize(20);
+
+
+// The text that will be displayed on the screen
+   text('Press \'s\' to start :)', width / 2, height / 2);
+   }
+  
+// If the game state is 'instructions', then the instruction function will be shown
+} else if (gameState === "instructions") {
+  
+// Calls the instructions function
+   instructions();
+
+
+// If the game state is 'start' then the start function will be shown
+} else if (gameState === "start") {
+
+
+// Calls the start function
+   start();
+
+
+// If the game state is 'levelOne', then the levelOne function will be shown
+} else if (gameState === "levelOne") {
+
+
+// Calls the levelOne function
+   runLevel(LevelOne, 'Level 1', timeLimits.levelOne);
+
+
+// If the game state is 'levelTwo', then the levelTwo function will be shown
+} else if (gameState === "levelTwo") {
+
+
+// Calls the levelTwo function
+   runLevel(LevelTwo, 'Level 2', timeLimits.levelTwo);
+
+
+// If the game state is 'levelThree', then the levelThree function will be shown
+} else if (gameState === "levelThree") {
+
+
+// Calls the levelThree function
+   runLevel(LevelThree, 'Level 3', timeLimits.levelThree);
+
+
+// If the game state is 'levelComplete', then the levelComplete function will be shown
+} else if (gameState === "levelComplete") {
+
+
+// Calls the levelComplete function
+   levelCompleteScreen();
+
+
+// If the game state is 'win', then the win function will be shown
+} else if (gameState === "win") {
+
+
+// Calls the winScreen function
+   winScreen();
+ }
+}
+
+
+
+
+// The instructions function
+function instructions() {
+
+
+// The colour of the text on the screen
+ fill(255);
+
+
+// The size of the text
+ textSize(20);
+
+
+// The text that will be displayed on the screen
+ text('There are 3 levels to this game. Each one gets progressively harder and more difficult to complete.', 450, 200);
+
+
+// The text that will be displayed on the screen
+ text('The ball will randomly appear across the screen, and you have to catch it by moving your cursor to', 450, 230);
+
+
+// The text that will be displayed on the screen
+ text('the ball. You have to "catch" the ball 10 times before the timer ends. If you succeed, then you can', 450, 260);
+
+
+// The text that will be displayed on the screen
+ text('move on to the next level. If you fail, then you have to restart the game. Press your mouse anywhere', 450, 290);
+
+
+// The text that will be displayed on the screen
+ text('to start the game. Have fun!', 450, 320);
+}
+
+
+
+
+// The start function
+function start() {
+
+
+// The colour of the text on the screen
+ fill(255);
+
+
+// The size of the text
+ textSize(20);
+
+
+// The text that will be displayed on the screen
+ text('Select your Character:', width / 2, height / 2 - 100);
+
+
+// Calls the select character function
+ selectCharacter();
+}
+
+
+
+
+// The select character function
+function selectCharacter() {
+
+
+// The colour of the first character (red)
+ fill(255, 0, 0);
+
+
+// The size of the first character (red)
+ ellipse(290, 200, ballSize);
+
+
+// The colour of the second character (green)
+ fill(0, 255, 0);
+
+
+// The size of the second character (green)
+ ellipse(450, 200, ballSize);
+
+
+// The colour of the third character (blue)
+ fill(0, 0, 255);
+
+
+// The size of the third character (blue)
+ ellipse(610, 200, ballSize); // Blue character
+}
+
+
+// The key pressed function
+function keyPressed() {
+
+
+// Checks of the currenet game state is 'welcome' and if the 's' key is pressed, then the game state will change to 'instructions'
+ if (gameState === "welcome" && key === 's' && (!startTime || score !== 0)) {
+
+
+// Changes the game state to 'instructions'
+   gameState = "instructions";
+
+
+// Redraws the canvas to update the display
+   redraw();
+ }
+}
+
+
+// The mouse pressed function
+function mousePressed() {
+
+
+// Checks if the current game state is 'instructions' and if the mouse is pressed, then the game state will change to 'start'
+ if (gameState === 'instructions') {
+
+
+// Changes the game state to 'start'
+   gameState = 'start';
+
+
+// Redraws the canvas to update the display
+   redraw();
+ }
+// Checks if the current game state is 'start' and if the mouse is pressed, then the game state will change to 'levelOne'
+ if (gameState === "start") {
+
+
+// Checks if the mouse cursor is within the bounds of the red character
+   if (dist(mouseX, mouseY, 290, 200) < ballSize / 2) {
+    
+// Sets the ball color to red.
+     ballColor = [255, 0, 0];
+
+
+// Changes the game state to "levelOne"
+     gameState = "levelOne";
+
+
+//Starts the timer for level one
+     startTime = millis();
+
+
+// Checks if the mouse cursor is within the bounds of the green character     
+   } else if (dist(mouseX, mouseY, 450, 200) < ballSize / 2) {
+
+
+// Sets the ball color to green
+     ballColor = [0, 255, 0];
+    
+// Changes the game state to "levelOne"
+     gameState = "levelOne";
+
+
+// Starts the timer for level one
+     startTime = millis();
+
+
+// Checks if the mouse cursor is within the bounds of the blue character
+   } else if (dist(mouseX, mouseY, 610, 200) < ballSize / 2) {
+
+
+// Sets the ball color to blue
+     ballColor = [0, 0, 255];
+    
+// Changes the game state to "levelOne"
+     gameState = "levelOne";
+    
+// Starts the timer for level one
+     startTime = millis();
+   }
+ }
+
+
+// Checks if the current game state is 'welcome' and if the mouse is pressed, then the game state will change to 'instructions'
+ if (gameState === "welcome" && score === 0 && startTime) {
+
+
+// Changes the game state to "instructions"
+   gameState = "instructions";
+
+
+// Redraw the canvas to update the display
+   redraw();
+ }
+
+
+// Checks if the variable `levelComplete` is true
+  if (levelComplete) {
+   
+// Checks if the game state is "levelComplete"
+    if (gameState === "levelComplete") {
+     
+//Checks if the score is greater than or equal to 10 but less than 20
+     if (score >= 10 && score < 20) {
+
+
+// Changes the game state to level two
+       gameState = "levelTwo";
+
+
+// Start the timer for level two
+       startTime = millis();
+      
+// A conditional statement that runs if the score is greater than or equal to 20 but less than 30
+     } else if (score >= 20 && score < 30) {
+
+
+// Chnages the game state to level three
+       gameState = "levelThree";
+      
+// Start the timer for level three
+       startTime = millis();
+
+
+// A conditional statement that runs if the score if greater than or equal to 30
+     } else if (score >= 30) {
+
+
+// Shows the variable as false so that the score is not shown
+       showScoreText = false;
+
+
+// Shows the variable as false so that the level is not shown
+       showLevelText = false;
+
+
+// Changes the game state to "win"
+       gameState = "win";
+     }
+
+
+// Shows the variable as false because the user did not complete the level
+     levelComplete = false;
+   }
+ }
+}
+
+
+
+
+//  The level complete function
+function levelCompleteScreen() {
+
+
+// The colour of the text on the screen
+ fill(255);
+
+
+// The text wioll have no outline
+ noStroke();
+
+
+// The size of the text
+ textSize(32);
+ // The text that will be displayed on the screen
+ text('Congratulations! You have completed the level!', width / 2, height / 2);
+
+
+// The text that will be displayed on the screen
+ textSize(20);
+
+
+// a  conditinal statemnt that will run if the score if less than 20
+ if (score < 20) {
+
+
+// The text that will be displayed on the screen
+   text('Press your mouse to continue to the next level', width / 2, height / 2 + 40);
+
+
+// A conditional statement that will run if the score is less than 30
+ } else if (score < 30) {
+
+
+// The text that will be displayed on the screen
+   text('Press your mouse to continue to the last level', width / 2, height / 2 + 40);
+ }
+}
+
+
+
+
+// The win screen function
+function winScreen() {
+
+
+// The colour of the text on the screen
+ fill(255);
+
+
+// The text will have no outline
+ noStroke();
+
+
+// The size of the text
+ textSize(32);
+
+
+// The text that will be displayed on the screen
+ text('Congratulations! You have won the game!', width / 2, height / 2);
+}
+
+
+
+
+// The run level function
+function runLevel(levelFunction, levelText, timeLimit) {
+
+
+// Calls the certain level function
+ levelFunction(levelText);
+
+
+// Calculates the amount of time that has passed since the user started playing the game
+ let elapsedTime = (millis() - startTime) / 1000;
+
+
+// Calculates the amount of time remaining by subtracting the time elapsed by the time limit
+ let timeRemaining = timeLimit - elapsedTime;
+
+
+// The colour of the text on the screen
+ fill(255);
+
+
+// The size of the text
+ textSize(20);
+
+
+// A conditional statement that will run if the scire is shown on the screen
+ if (showScoreText) {
+
+
+// The text will have no outline
+   noStroke();
+
+
+// The text that will be displayed on the screen
+   text('Score: ' + score, width / 2, height - 20);
+ }
+
+
+// Thetext will have no outline
+ noStroke();
+
+
+// The text that will be displayed on the screen
+ text('Time left: ' + ceil(timeRemaining), width / 2, 80);
+
+
+// A conditional statement that runs if the time remaining is less than or equal to 0
+ if (timeRemaining <= 0) {
+
+
+// Sets the game state as welcome
+   gameState = "welcome";
+
+
+// Sets the variable as 0
+   score = 0;
+
+
+// The size of the ball
+   ballSize = 40;
+
+
+// The size of the text
+   textSize(32);
+  
+// The colour of the text on the screen
+   fill(255, 0, 0);
+  
+// The text that will be displayed on the screen
+   text('Time is up! You failed the level. Press your mouse to try again!', width / 2, height / 2);
+
+
+// Records the time when the user fails the level
+   startTime = millis();
+ }
+}
+
+
+// The level one function
+function LevelOne(levelText) {
+
+
+// Checks if the variavle is true so the condition can run
+ if (showLevelText) {
+
+
+// The colour of the text on the screen
+   fill(255);
+
+
+// The size of the text
+   textSize(20);
+
+
+// The text the will be displayed on the screen
+   text(levelText, width / 2, 50);
+ }
+
+
+// Assigns a new variable that calculates the distance of the mouse cursor from the ball
+ let distToBall = dist(ballX, ballY, mouseX, mouseY);
+
+
+// A conditional statement that will run if the distance of the mouse cursor from the ball is less than the ball size divided by 2
+ if (distToBall < ballSize / 2) {
+
+
+// Assigns a new random x coordinate to the ball
+   ballX = random(width);
+
+
+// Assigns a new random y coordinate to the ball
+   ballY = random(height);
+
+
+// Increases the score by 1
+   score = score + 1;
+ }
+
+
+// A conditional statement that will run if the score is less than 10
+ if (score < 10) {
+
+
+// The thickness of the ball
+   strokeWeight(3);
+
+
+// The colour of the outline of the ball (white)
+   stroke(255);
+
+
+// The colour of the ball
+   fill(ballColor);
+
+
+// Creating the ball
+   ellipse(ballX, ballY, ballSize);
+
+
+// The thickness of the line
+   strokeWeight(5);
+
+
+// The colour of the line
+   stroke(255);
+
+
+// Creating the line
+   line(ballX, ballY, mouseX, mouseY);
+
+
+// Another conditional statement that runs if the score is not less than 10
+ } else {
+
+
+// The game state changes to 'levelComplete'
+   gameState = "levelComplete";
+
+
+// Chnages the boolean variable to true
+   levelComplete = true;
+ }
+}
+
+
+// The level two function
+function LevelTwo(levelText) {
+
+
+// A conditional statement that will run if the boolean value inside the paranthesis is true
+ if (showLevelText) {
+
+
+// The colour of the text on the screen
+   fill(255);
+
+
+// The size of the text
+   textSize(20);
+
+
+// The text that will be displayed on the screen
+   text(levelText, width / 2, 50);
+ }
+
+
+// Assigns a new variable that calculates the distance of the mouse cursor from the ball
+ let distToBall = dist(ballX, ballY, mouseX, mouseY);
+
+
+// A conditional statement that will run if the distance of the mouse cursor from the ball is less than the ball size divided by
+ if (distToBall < ballSize / 2) {
+
+
+// Assigns a new random x coordinate to the ball
+   ballX = random(width);
+
+
+// Assigns a new random y coordinate to the ball
+   ballY = random(height);
+
+
+// Increases the score by 1
+   score = score + 1;
+ }
+ // A conditional statement that will run if the score is less than 20
+ if (score < 20) {
+
+
+// The thickness of the ball
+   strokeWeight(3);
+
+
+// The colour of the outline of the ball (white)
+   stroke(255);
+
+
+// The colour of the ball
+   fill(ballColor);
+
+
+// Creating the ball
+   ellipse(ballX, ballY, ballSize);
+
+
+// Another conditional statement that runs if the score is not less than 20
+ } else {
+
+
+// The game state changes to 'levelComplete'
+   gameState = "levelComplete";
+
+
+// Changes the boolean variable to true
+   levelComplete = true;
+ }
+}
+
+
+// The level three function
+function LevelThree(levelText) {
+
+
+// A conditional statement that will run if the boolean value inside the paranthesis is true
+ if (showLevelText) {
+
+
+// The colour of the text on the screen
+   fill(255);
+
+
+// The size of the text
+   textSize(20);
+
+
+// The text the displays the level the user is on
+   text(levelText, width / 2, 50);
+ }
+// Assigns a new variable that calculates the distance of the mouse cursor from the ball
+ let distToBall = dist(ballX, ballY, mouseX, mouseY);
+
+
+// A conditional statement that will run if the distance of the mouse cursor from the ball is less than the ball size divided by
+ if (distToBall < ballSize / 2) {
+
+
+// Assigns a new random x coordinate to the ball
+   ballX = random(width);
+
+
+// Assigns a new random y coordinate to the ball
+   ballY = random(height);
+
+
+// Increases the score by 1
+   score = score + 1;
+
+
+// Decreases the ball size by 2
+   ballSize = ballSize - 2;
+ }
+
+
+// A conditional statement that will run if the score is less than 30
+ if (score < 30) {
+
+
+// The thickness of the ball
+   strokeWeight(3);
+
+
+// The colour of the outline of the ball (white)
+   stroke(255);
+
+
+// The colour of the ball
+   fill(ballColor);
+
+
+// Creating the ball
+   ellipse(ballX, ballY, ballSize);
+
+
+// Another conditional statement that runs if the score is not less than 30
+ } else {
+
+
+// The game state changes to 'win'
+   gameState = "win";
+
+
+// Changes the boolean variable to true
+   levelComplete = true;
+ }
+}
